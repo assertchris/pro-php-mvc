@@ -17,23 +17,13 @@ class Route
         $this->handler = $handler;
     }
 
-    public function method(string $method = null): mixed
+    public function method(string $method): string
     {
-        if ($method) {
-            $this->method = $method;
-            return $this;
-        }
-
         return $this->method;
     }
 
-    public function path(string $path = null): mixed
+    public function path(string $path): string
     {
-        if ($path) {
-            $this->path = $path;
-            return $this;
-        }
-
         return $this->path;
     }
 
@@ -42,7 +32,7 @@ class Route
         return $this->parameters;
     }
 
-    public function name(string $name = null): mixed
+    public function name(string $name = null): string
     {
         if ($name) {
             $this->name = $name;
@@ -56,7 +46,7 @@ class Route
     {
         if (
             $this->method === $method
-            and $this->path === $path
+            && $this->path === $path
         ) {
             return true;
         }
@@ -77,7 +67,7 @@ class Route
 
         if (
             !str_contains($pattern, '+')
-            and !str_contains($pattern, '*')
+            && !str_contains($pattern, '*')
         ) {
             return false;
         }
