@@ -5,7 +5,7 @@ use Framework\Routing\Router;
 return function(Router $router) {
     $router->add(
         'GET', '/',
-        fn() => 'hello world',
+        fn() => view('home', ['number' => 42]),
     );
 
     $router->add(

@@ -17,12 +17,12 @@ class Route
         $this->handler = $handler;
     }
 
-    public function method(string $method): string
+    public function method(): string
     {
         return $this->method;
     }
 
-    public function path(string $path): string
+    public function path(): string
     {
         return $this->path;
     }
@@ -32,7 +32,7 @@ class Route
         return $this->parameters;
     }
 
-    public function name(string $name = null): string
+    public function name(string $name = null)
     {
         if ($name) {
             $this->name = $name;
