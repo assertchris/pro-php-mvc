@@ -3,7 +3,7 @@
 use Framework\View;
 
 if (!function_exists('view')) {
-    function view($path, $data = [])
+    function view(string $path, array $data = []): string
     {
         static $manager;
 
@@ -18,6 +18,7 @@ if (!function_exists('view')) {
             // with their expected extensions to be able to pick
             // the appropriate engine for the template
             $manager->addEngine('basic.php', new View\Engine\BasicEngine());
+            $manager->addEngine('php', new View\Engine\PhpEngine());
         }
 
         return $manager->render($path, $data);
