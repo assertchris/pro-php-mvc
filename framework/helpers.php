@@ -3,7 +3,7 @@
 use Framework\View;
 
 if (!function_exists('view')) {
-    function view(string $path, array $data = []): string
+    function view(string $template, array $data = []): View\View
     {
         static $manager;
 
@@ -19,8 +19,12 @@ if (!function_exists('view')) {
             // the appropriate engine for the template
             $manager->addEngine('basic.php', new View\Engine\BasicEngine());
             $manager->addEngine('php', new View\Engine\PhpEngine());
+
+            // how about macros? let's add them here for now
+            $manager->addMacro('escape', fn($value) => htmlspecialchars($value));
         }
 
-        return $manager->render($path, $data);
+        // return $manager->render($template, $data);
+        return $manager->resolve($template, $data);
     }
 }

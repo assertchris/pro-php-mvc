@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="container mx-auto font-sans">
-            <?php print $this->contents; ?>
+            <?php print $contents; ?>
         </div>
     </body>
 </html>
