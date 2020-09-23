@@ -62,10 +62,10 @@ class PhpEngine implements Engine
         return $this;
     }
 
-    protected function includes(string $template, $data = []): void
-    {
-        print view($template, $data);
-    }
+    // protected function includes(string $template, $data = []): void
+    // {
+    //     print view($template, $data);
+    // }
 
     public function __call(string $name, $values)
     {

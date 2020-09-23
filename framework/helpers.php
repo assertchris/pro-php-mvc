@@ -18,10 +18,12 @@ if (!function_exists('view')) {
             // with their expected extensions to be able to pick
             // the appropriate engine for the template
             $manager->addEngine('basic.php', new View\Engine\BasicEngine());
+            $manager->addEngine('advanced.php', new View\Engine\AdvancedEngine());
             $manager->addEngine('php', new View\Engine\PhpEngine());
 
             // how about macros? let's add them here for now
             $manager->addMacro('escape', fn($value) => htmlspecialchars($value));
+            $manager->addMacro('includes', fn(...$params) => print view(...$params));
         }
 
         // return $manager->render($template, $data);
