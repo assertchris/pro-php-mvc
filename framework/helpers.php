@@ -22,7 +22,7 @@ if (!function_exists('view')) {
             $manager->addEngine('php', new View\Engine\PhpEngine());
 
             // how about macros? let's add them here for now
-            $manager->addMacro('escape', fn($value) => htmlspecialchars($value));
+            $manager->addMacro('escape', fn($value) => htmlspecialchars($value, ENT_QUOTES));
             $manager->addMacro('includes', fn(...$params) => print view(...$params));
         }
 

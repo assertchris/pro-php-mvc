@@ -33,7 +33,7 @@ return function(Router $router) {
             $parameters = $router->current()->parameters();
 
             return view('products/view', [
-                'parameters' => $parameters,
+                'product' => $parameters['product'],
                 'scary' => '<script>alert("hello")</script>',
             ]);
         },

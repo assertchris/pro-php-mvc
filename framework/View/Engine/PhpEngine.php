@@ -51,7 +51,7 @@ class PhpEngine implements Engine
 
     // protected function escape(string $content): string
     // {
-    //     return htmlspecialchars($content);
+    //     return htmlspecialchars($content, ENT_QUOTES);
     // }
 
     protected function extends(string $template): static

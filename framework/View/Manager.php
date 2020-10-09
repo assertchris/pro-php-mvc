@@ -32,7 +32,7 @@ class Manager
     //         foreach ($this->paths as $path) {
     //             $file = "{$path}/{$template}.{$extension}";
 
-    //             if (file_exists($file)) {
+    //             if (is_file($file)) {
     //                 return $engine->render($file, $data);
     //             }
     //         }
@@ -47,7 +47,7 @@ class Manager
             foreach ($this->paths as $path) {
                 $file = "{$path}/{$template}.{$extension}";
 
-                if (file_exists($file)) {
+                if (is_file($file)) {
                     return new View($engine, realpath($file), $data);
                 }
             }
