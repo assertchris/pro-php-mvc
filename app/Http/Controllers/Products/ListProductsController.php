@@ -6,6 +6,8 @@ use Framework\Routing\Router;
 
 class ListProductsController
 {
+    protected Router $router;
+
     public function __construct(Router $router)
     {
         $this->router = $router;
@@ -17,7 +19,7 @@ class ListProductsController
         $parameters['page'] ??= 1;
 
         $next = $this->router->route(
-            'product-list', [
+            'list-products', [
                 'page' => $parameters['page'] + 1,
             ]
         );

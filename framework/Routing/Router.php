@@ -3,6 +3,7 @@
 namespace Framework\Routing;
 
 use Exception;
+use Framework\Validation\ValidationException;
 use Throwable;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -40,6 +41,11 @@ class Router
                 return $matching->dispatch();
             }
             catch (Throwable $e) {
+                if ($e instanceof ValidationException) {
+                    $_SESSION['errors'] = $e->getErrors();
+                    return redirect($_SERVER['HTTP_REFERER']);
+                }
+
                 if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
                     $whoops = new Run();
                     $whoops->pushHandler(new PrettyPageHandler);

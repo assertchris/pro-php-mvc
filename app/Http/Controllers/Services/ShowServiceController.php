@@ -6,6 +6,8 @@ use Framework\Routing\Router;
 
 class ShowServiceController
 {
+    protected Router $router;
+
     public function __construct(Router $router)
     {
         $this->router = $router;
