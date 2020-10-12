@@ -16,6 +16,11 @@ class AdvancedEngine implements Engine
     {
         $hash = md5($view->path);
         $folder = __DIR__ . '/../../../storage/framework/views';
+
+        if (!is_file("{$folder}/{$hash}.php")) {
+            touch("{$folder}/{$hash}.php");
+        }
+
         $cached = realpath("{$folder}/{$hash}.php");
 
         if (!file_exists($hash) || filemtime($view->path) > filemtime($hash)) {
