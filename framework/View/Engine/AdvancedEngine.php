@@ -49,14 +49,19 @@ class AdvancedEngine implements Engine
             return '<?php $this->extends(' . $matches[1] . '); ?>';
         }, $template);
 
-        // replace `@id` with `if(...):`
+        // replace `@if` with `if(...):`
         $template = preg_replace_callback('#@if\(([^)]+)\)#', function($matches) {
             return '<?php if(' . $matches[1] . '): ?>';
         }, $template);
 
-        // replace `{{ ... }}` with `print $this->escape(...)`
+        // replace `@endif` with `endif;`
         $template = preg_replace_callback('#@endif#', function($matches) {
             return '<?php endif; ?>';
+        }, $template);
+
+         // replace `{{ ... }}` with `print $this->escape(...)`
+        $template = preg_replace_callback('#\{\{([^}]+)\}\}#', function($matches) {
+            return '<?php print $this->escape(' . $matches[1] . '); ?>';
         }, $template);
 
         // replace `{!! ... !!}` with `print ...`
