@@ -50,12 +50,12 @@ class AdvancedEngine implements Engine
     protected function compile(string $template): string
     {
         // replace `@extends` with `$this->extends`
-        $template = preg_replace_callback('#@extends\(([^)]+)\)#', function($matches) {
+        $template = preg_replace_callback('#@extends\(((?<=\().*(?=\)))\)#', function($matches) {
             return '<?php $this->extends(' . $matches[1] . '); ?>';
         }, $template);
 
         // replace `@if` with `if(...):`
-        $template = preg_replace_callback('#@if\(([^)]+)\)#', function($matches) {
+        $template = preg_replace_callback('#@if\(((?<=\().*(?=\)))\)#', function($matches) {
             return '<?php if(' . $matches[1] . '): ?>';
         }, $template);
 
@@ -64,13 +64,23 @@ class AdvancedEngine implements Engine
             return '<?php endif; ?>';
         }, $template);
 
+        // replace `@foreach` with `foreach(...):`
+        $template = preg_replace_callback('#@foreach\(((?<=\().*(?=\)))\)#', function($matches) {
+            return '<?php foreach(' . $matches[1] . '): ?>';
+        }, $template);
+
+        // replace `@endforeach` with `endforeach;`
+        $template = preg_replace_callback('#@endforeach#', function($matches) {
+            return '<?php endforeach; ?>';
+        }, $template);
+
         // replace `@[anything](...)` with `$this->[anything](...)`
-        $template = preg_replace_callback('#@([^(]+)\(([^)]+)\)#', function($matches) {
+        $template = preg_replace_callback('#@([^(]+)\(((?<=\().*(?=\)))\)#', function($matches) {
             return '<?php $this->' . $matches[1] . '(' . $matches[2] . '); ?>';
         }, $template);
 
          // replace `{{ ... }}` with `print $this->escape(...)`
-        $template = preg_replace_callback('#\{\{([^}]+)\}\}#', function($matches) {
+        $template = preg_replace_callback('#\{\{([^}]*)\}\}#', function($matches) {
             return '<?php print $this->escape(' . $matches[1] . '); ?>';
         }, $template);
 
