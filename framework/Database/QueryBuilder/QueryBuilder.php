@@ -16,11 +16,6 @@ abstract class QueryBuilder
     protected int $offset;
 
     /**
-     * Get the underlying Connection instance for this query
-     */
-    abstract public function connection(): Connection;
-
-    /**
      * Fetch all rows matching the current query
      */
     public function all(): array
@@ -47,7 +42,7 @@ abstract class QueryBuilder
             throw new QueryException('Unrecognised query type');
         }
 
-        return $this->connection()->pdo()->prepare($query);
+        return $this->connection->pdo()->prepare($query);
     }
 
     /**

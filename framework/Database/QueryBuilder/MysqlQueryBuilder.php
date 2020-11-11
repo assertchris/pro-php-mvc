@@ -6,15 +6,10 @@ use Framework\Database\Connection\MysqlConnection;
 
 class MysqlQueryBuilder extends QueryBuilder
 {
-    private MysqlConnection $connection;
+    protected MysqlConnection $connection;
 
     public function __construct(MysqlConnection $connection)
     {
         $this->connection = $connection;
-    }
-
-    public function connection(): MysqlConnection
-    {
-        return $this->connection;
     }
 }
