@@ -16,40 +16,19 @@ class ShowHomePageController
             return new MysqlConnection($config);
         });
 
-        // $factory->addConnector('sqlite', function($config) {
-        //     return new SqliteConnection($config);
-        // });
+        $factory->addConnector('sqlite', function($config) {
+            return new SqliteConnection($config);
+        });
 
-        $connection = $factory->connect([
-            'type' => 'mysql',
-            'host' => '127.0.0.1',
-            'port' => '3306',
-            'database' => 'pro-php-mvc',
-            'username' => 'root',
-            'password' => '',
-        ]);
+        $config = require __DIR__ . '/../../../config/database.php';
 
-        // $connection = $factory->connect([
-        //     'type' => 'sqlite',
-        //     'path' => __DIR__ . '/../../../database/database.sqlite',
-        // ]);
+        $connection = $factory->connect($config[$config['default']]);
         
         $product = $connection
             ->query()
             ->select()
             ->from('products')
             ->first();
-
-        $table = 'test_' . time();
-
-        $createMigration = $connection->createTable($table);
-        $createMigration->id('id');
-        $createMigration->int('quantity')->default(1);
-        $createMigration->float('price')->nullable();
-        $createMigration->bool('is_confirmed')->default(false);
-        $createMigration->dateTime('ordered_at')->default('CURRENT_TIMESTAMP');
-        $createMigration->text('notes');
-        $createMigration->execute();
 
         return view('home', [
             'number' => 42,
