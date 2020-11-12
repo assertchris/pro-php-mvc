@@ -22,4 +22,9 @@ abstract class Connection
      * Start a new migration to add a table on this connection
      */
     abstract public function createTable(string $table): Migration;
+
+    /**
+     * Start a new migration to add a table on this connection
+     */
+    abstract public function alterTable(string $table): Migration;
 }

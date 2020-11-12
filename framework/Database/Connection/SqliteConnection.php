@@ -36,4 +36,9 @@ class SqliteConnection extends Connection
     {
         return new SqliteMigration($this, $table, 'create');
     }
+
+    public function alterTable(string $table): SqliteMigration
+    {
+        return new SqliteMigration($this, $table, 'alter');
+    }
 }

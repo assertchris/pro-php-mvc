@@ -42,4 +42,9 @@ class MysqlConnection extends Connection
     {
         return new MysqlMigration($this, $table, 'create');
     }
+
+    public function alterTable(string $table): MysqlMigration
+    {
+        return new MysqlMigration($this, $table, 'alter');
+    }
 }

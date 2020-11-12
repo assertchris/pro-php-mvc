@@ -58,4 +58,5 @@ abstract class Migration
     }
 
     abstract public function execute();
+    abstract public function dropColumn(string $name): static;
 }

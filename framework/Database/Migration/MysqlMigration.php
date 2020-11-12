@@ -18,6 +18,7 @@ class MysqlMigration extends Migration
     protected MysqlConnection $connection;
     protected string $table;
     protected string $type;
+    protected array $drops = [];
 
     public function __construct(MysqlConnection $connection, string $table, string $type)
     {
@@ -28,20 +29,32 @@ class MysqlMigration extends Migration
 
     public function execute()
     {
-        $command = $this->type === 'create' ? 'CREATE TABLE' : 'ALTER TABLE';
-
         $fields = array_map(fn($field) => $this->stringForField($field), $this->fields);
-        $fields = join(',' . PHP_EOL, $fields);
 
         $primary = array_filter($this->fields, fn($field) => $field instanceof IdField);
         $primaryKey = isset($primary[0]) ? "PRIMARY KEY (`{$primary[0]->name}`)" : '';
 
-        $query = "
-            {$command} `{$this->table}` (
-                {$fields},
-                {$primaryKey}
-            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-        ";
+        if ($this->type === 'create') {
+            $fields = join(PHP_EOL, array_map(fn($field) => "{$field},", $fields));
+
+            $query = "
+                CREATE TABLE `{$this->table}` (
+                    {$fields}
+                    {$primaryKey}
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+            ";
+        }
+
+        if ($this->type === 'alter') {
+            $fields = join(PHP_EOL, array_map(fn($field) => "{$field};", $fields));
+            $drops = join(PHP_EOL, array_map(fn($drop) => "DROP COLUMN `{$drop}`;", $this->drops));
+
+            $query = "
+                ALTER TABLE `{$this->table}`
+                {$fields}
+                {$drops}
+            ";
+        }
 
         $statement = $this->connection->pdo()->prepare($query);
         $statement->execute();
@@ -49,8 +62,18 @@ class MysqlMigration extends Migration
 
     private function stringForField(Field $field): string
     {
+        $prefix = '';
+
+        if ($this->type === 'alter') {
+            $prefix = 'ADD';
+        }
+
+        if ($field->alter) {
+            $prefix = 'MODIFY';
+        }
+
         if ($field instanceof BoolField) {
-            $template = "`{$field->name}` tinyint(4)";
+            $template = "{$prefix} `{$field->name}` tinyint(4)";
 
             if ($field->nullable) {
                 $template .= " DEFAULT NULL";
@@ -65,7 +88,7 @@ class MysqlMigration extends Migration
         }
 
         if ($field instanceof DateTimeField) {
-            $template = "`{$field->name}` datetime";
+            $template = "{$prefix} `{$field->name}` datetime";
 
             if ($field->nullable) {
                 $template .= " DEFAULT NULL";
@@ -81,7 +104,7 @@ class MysqlMigration extends Migration
         }
 
         if ($field instanceof FloatField) {
-            $template = "`{$field->name}` float";
+            $template = "{$prefix} `{$field->name}` float";
 
             if ($field->nullable) {
                 $template .= " DEFAULT NULL";
@@ -95,11 +118,11 @@ class MysqlMigration extends Migration
         }
 
         if ($field instanceof IdField) {
-            return "`{$field->name}` int(11) unsigned NOT NULL AUTO_INCREMENT";
+            return "{$prefix} `{$field->name}` int(11) unsigned NOT NULL AUTO_INCREMENT";
         }
 
         if ($field instanceof IntField) {
-            $template = "`{$field->name}` int(11)";
+            $template = "{$prefix} `{$field->name}` int(11)";
 
             if ($field->nullable) {
                 $template .= " DEFAULT NULL";
@@ -113,7 +136,7 @@ class MysqlMigration extends Migration
         }
 
         if ($field instanceof StringField) {
-            $template = "`{$field->name}` varchar(255)";
+            $template = "{$prefix} `{$field->name}` varchar(255)";
 
             if ($field->nullable) {
                 $template .= " DEFAULT NULL";    
@@ -127,9 +150,15 @@ class MysqlMigration extends Migration
         }
 
         if ($field instanceof TextField) {
-            return "`{$field->name}` text";
+            return "{$prefix} `{$field->name}` text";
         }
 
         throw new MigrationException("Unrecognised field type for {$field->name}");
+    }
+
+    public function dropColumn(string $name): static
+    {
+        $this->drops[] = $name;
+        return $this;
     }
 }
