@@ -75,7 +75,7 @@ class AdvancedEngine implements Engine
         }, $template);
 
         // replace `@[anything](...)` with `$this->[anything](...)`
-        $template = preg_replace_callback('#@([^(]+)\(((?<=\().*(?=\)))\)#', function($matches) {
+        $template = preg_replace_callback('#\s+@([^(]+)\(((?<=\().*(?=\)))\)#', function($matches) {
             return '<?php $this->' . $matches[1] . '(' . $matches[2] . '); ?>';
         }, $template);
 

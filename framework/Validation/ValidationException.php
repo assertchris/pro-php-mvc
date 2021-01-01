@@ -7,6 +7,7 @@ use InvalidArgumentException;
 class ValidationException extends InvalidArgumentException
 {
     protected array $errors = [];
+    protected string $sessionName = 'errors';
 
     public function setErrors(array $errors): static
     {
@@ -17,5 +18,16 @@ class ValidationException extends InvalidArgumentException
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    public function setSessionName(string $sessionName): static
+    {
+        $this->sessionName = $sessionName;
+        return $this;
+    }
+
+    public function getSessionName(): string
+    {
+        return $this->sessionName;
     }
 }

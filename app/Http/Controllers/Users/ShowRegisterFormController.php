@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Users;
 
-use Framework\Routing\Router;
-
-// DEBUG
 use Framework\Database\Factory;
 use Framework\Database\Connection\Connection;
 use Framework\Database\Connection\MysqlConnection;
+use Framework\Routing\Router;
 
 class ShowRegisterFormController
 {
@@ -22,18 +20,22 @@ class ShowRegisterFormController
     {
         $factory = new Factory();
 
-        $factory->addConnector('mysql', function(array $config): Connection {
+        $factory->addConnector('mysql', function($config) {
             return new MysqlConnection($config);
         });
 
-        $connection = $factory->connect([
-            'type' => 'mysql',
-        ]);
+        $factory->addConnector('sqlite', function($config) {
+            return new SqliteConnection($config);
+        });
 
-        dd($connection);
+        $config = require __DIR__ . '/../../../../config/database.php';
+
+        $connection = $factory->connect($config[$config['default']]);
 
         return view('users/register', [
-            'router' => $this->router,
+            'registerAction' => $this->router->route('register-user'),
+            'logInAction' => $this->router->route('log-in-user'),
+            'csrf' => csrf(),
         ]);
     }
 }

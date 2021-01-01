@@ -14,6 +14,7 @@ if (!function_exists('view')) {
             // let's add a path for our views folder
             // so the manager knows where to look for views
             $manager->addPath(__DIR__ . '/../resources/views');
+            $manager->addPath(__DIR__ . '/../resources/images');
 
             // we'll also start adding new engine classes
             // with their expected extensions to be able to pick
@@ -21,6 +22,7 @@ if (!function_exists('view')) {
             $manager->addEngine('basic.php', new View\Engine\BasicEngine());
             $manager->addEngine('advanced.php', new View\Engine\AdvancedEngine());
             $manager->addEngine('php', new View\Engine\PhpEngine());
+            $manager->addEngine('svg', new View\Engine\LiteralEngine());
 
             // how about macros? let's add them here for now
             $manager->addMacro('escape', fn($value) => htmlspecialchars($value, ENT_QUOTES));
@@ -40,7 +42,7 @@ if (!function_exists('redirect')) {
 }
 
 if (!function_exists('validate')) {
-    function validate(array $data, array $rules)
+    function validate(array $data, array $rules, string $sessionName = 'errors')
     {
         static $manager;
 
@@ -53,7 +55,7 @@ if (!function_exists('validate')) {
             $manager->addRule('min', new Validation\Rule\MinRule());
         }
 
-        return $manager->validate($data, $rules);
+        return $manager->validate($data, $rules, $sessionName);
     }
 }
 

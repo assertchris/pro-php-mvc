@@ -15,7 +15,7 @@ class Manager
         return $this;
     }
 
-    public function validate(array $data, array $rules): array
+    public function validate(array $data, array $rules, string $sessionName = 'errors'): array
     {
         $errors = [];
 
@@ -44,7 +44,11 @@ class Manager
         if (count($errors)) {
             $exception = new ValidationException();
             $exception->setErrors($errors);
+            $exception->setSessionName($sessionName);
             throw $exception;
+        } else {
+            // this is here until we have a better session system...
+            unset($_SESSION[$sessionName]);
         }
 
         return array_intersect_key($data, $rules);

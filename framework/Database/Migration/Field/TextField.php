@@ -10,7 +10,7 @@ class TextField extends Field
 
     public function nullable(): static
     {
-        throw new MigrationException('Text fields cannot be non-nullable');
+        throw new MigrationException('Text fields cannot be nullable');
     }
 
     public function default(string $value): static

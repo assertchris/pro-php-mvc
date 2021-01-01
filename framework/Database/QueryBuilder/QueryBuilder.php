@@ -10,10 +10,12 @@ use PdoStatement;
 abstract class QueryBuilder
 {
     protected string $type;
-    protected string $columns;
+    protected array $columns;
     protected string $table;
     protected int $limit;
     protected int $offset;
+    protected array $values;
+    protected array $wheres = [];
 
     /**
      * Fetch all rows matching the current query
@@ -21,9 +23,24 @@ abstract class QueryBuilder
     public function all(): array
     {
         $statement = $this->prepare();
-        $statement->execute();
+        $statement->execute($this->getWhereValues());
 
         return $statement->fetchAll(Pdo::FETCH_ASSOC);
+    }
+
+    protected function getWhereValues(): array
+    {
+        $values = [];
+
+        if (count($this->wheres) === 0) {
+            return $values;
+        }
+
+        foreach ($this->wheres as $where) {
+            $values[$where[0]] = $where[2];
+        }
+
+        return $values;
     }
 
     /**
@@ -35,7 +52,12 @@ abstract class QueryBuilder
 
         if ($this->type === 'select') {
             $query = $this->compileSelect($query);
+            $query = $this->compileWheres($query);
             $query = $this->compileLimit($query);
+        }
+
+        if ($this->type === 'insert') {
+            $query = $this->compileInsert($query);
         }
 
         if (empty($query)) {
@@ -50,7 +72,9 @@ abstract class QueryBuilder
      */
     protected function compileSelect(string $query): string
     {
-        $query .= " SELECT {$this->columns} FROM {$this->table}";
+        $joinedColumns = join(', ', $this->columns);
+
+        $query .= " SELECT {$joinedColumns} FROM {$this->table}";
 
         return $query;
     }
@@ -60,13 +84,47 @@ abstract class QueryBuilder
      */
     protected function compileLimit(string $query): string
     {
-        if ($this->limit) {
+        if (isset($this->limit)) {
             $query .= " LIMIT {$this->limit}";
         }
 
-        if ($this->offset) {
+        if (isset($this->offset)) {
             $query .= " OFFSET {$this->offset}";
         }
+
+        return $query;
+    }
+
+    protected function compileWheres(string $query): string
+    {
+        if (count($this->wheres) === 0) {
+            return $query;
+        }
+
+        $query .= ' WHERE';
+
+        foreach ($this->wheres as $i => $where) {
+            if ($i > 0) {
+                $query .= ', ';
+            }
+
+            [$column, $comparator, $value] = $where;
+
+            $query .= " {$column} {$comparator} :{$column}";
+        }
+
+        return $query;
+    }
+
+    /**
+     * Add insert clause to the query
+     */
+    protected function compileInsert(string $query): string
+    {
+        $joinedColumns = join(', ', $this->columns);
+        $joinedPlaceholders = join(', ', array_map(fn($column) => ":{$column}", $this->columns));
+
+        $query .= " INSERT INTO {$this->table} ({$joinedColumns}) VALUES ({$joinedPlaceholders})";
 
         return $query;
     }
@@ -77,9 +135,15 @@ abstract class QueryBuilder
     public function first(): array
     {
         $statement = $this->take(1)->prepare();
-        $statement->execute();
+        $statement->execute($this->getWhereValues());
 
-        return $statement->fetchAll(Pdo::FETCH_ASSOC);
+        $result = $statement->fetchAll(Pdo::FETCH_ASSOC);
+
+        if (count($result) === 1) {
+            return $result[0];
+        }
+
+        return null;
     }
 
     /**
@@ -107,10 +171,40 @@ abstract class QueryBuilder
      * Indicate the query type is a "select" and remember 
      * which fields should be returned by the query
      */
-    public function select(string $columns = '*'): static
+    public function select(mixed $columns = '*'): static
     {
+        if (is_string($columns)) {
+            $columns = [$columns];
+        }
+
         $this->type = 'select';
         $this->columns = $columns;
+
+        return $this;
+    }
+
+    /**
+     * Insert a row of data into the table specified in the query
+     * and return the number of affected rows
+     */
+    public function insert(array $columns, array $values): int
+    {
+        $this->type = 'insert';
+        $this->columns = $columns;
+        $this->values = $values;
+
+        $statement = $this->prepare();
+
+        return $statement->execute($values);
+    }
+
+    public function where(string $column, mixed $comparator, mixed $value = null): static
+    {
+        if (is_null($value) && !is_null($comparator)) {
+            array_push($this->wheres, [$column, '=', $comparator]);
+        } else {
+            array_push($this->wheres, [$column, $comparator, $value]);
+        }
 
         return $this;
     }

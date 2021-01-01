@@ -1,22 +1,22 @@
 <?php
 
 use App\Http\Controllers\ShowHomePageController;
-use App\Http\Controllers\Products\ListProductsController;
+use App\Http\Controllers\Products\OrderProductController;
 use App\Http\Controllers\Products\ShowProductController;
-use App\Http\Controllers\Services\ShowServiceController;
+use App\Http\Controllers\Users\LogInUserController;
 use App\Http\Controllers\Users\RegisterUserController;
 use App\Http\Controllers\Users\ShowRegisterFormController;
 use Framework\Routing\Router;
 
 return function(Router $router) {
-    $router->add(
-        'GET', '/',
-        [ShowHomePageController::class, 'handle'],
-    )->name('show-home-page');
-
     $router->errorHandler(
         404, fn() => 'whoops!'
     );
+
+    $router->add(
+        'GET', '/',
+        [new ShowHomePageController($router), 'handle'],
+    )->name('show-home-page');
 
     $router->add(
         'GET', '/products/view/{product}',
@@ -24,14 +24,9 @@ return function(Router $router) {
     )->name('view-product');
 
     $router->add(
-        'GET', '/products/{page?}',
-        [new ListProductsController($router), 'handle'],
-    )->name('list-products');
-
-    $router->add(
-        'GET', '/services/view/{service?}',
-        [new ShowServiceController($router), 'handle'],
-    )->name('show-service');
+        'POST', '/products/order/{product}',
+        [new OrderProductController($router), 'handle'],
+    )->name('order-product');
 
     $router->add(
         'GET', '/register',
@@ -42,4 +37,9 @@ return function(Router $router) {
         'POST', '/register',
         [new RegisterUserController($router), 'handle'],
     )->name('register-user');
+
+    $router->add(
+        'POST', '/log-in',
+        [new LogInUserController($router), 'handle'],
+    )->name('log-in-user');
 };

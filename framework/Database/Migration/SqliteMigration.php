@@ -83,7 +83,7 @@ class SqliteMigration extends Migration
         }
 
         if ($field instanceof DateTimeField) {
-            $template = "{$prefix} `{$field->name}` TEXT";
+            $template = "{$prefix} \"{$field->name}\" TEXT";
 
             if (!$field->nullable) {
                 $template .= " NOT NULL";
@@ -99,7 +99,7 @@ class SqliteMigration extends Migration
         }
 
         if ($field instanceof FloatField) {
-            $template = "{$prefix} `{$field->name}` REAL";
+            $template = "{$prefix} \"{$field->name}\" REAL";
 
             if (!$field->nullable) {
                 $template .= " NOT NULL";
@@ -113,11 +113,11 @@ class SqliteMigration extends Migration
         }
 
         if ($field instanceof IdField) {
-            return "{$prefix} `{$field->name}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE";
+            return "{$prefix} \"{$field->name}\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE";
         }
 
         if ($field instanceof IntField) {
-            $template = "{$prefix} `{$field->name}` INTEGER";
+            $template = "{$prefix} \"{$field->name}\" INTEGER";
 
             if (!$field->nullable) {
                 $template .= " NOT NULL";
@@ -131,10 +131,10 @@ class SqliteMigration extends Migration
         }
 
         if ($field instanceof StringField || $field instanceof TextField) {
-            $template = "{$prefix} `{$field->name}` TEXT";
+            $template = "{$prefix} \"{$field->name}\" TEXT";
 
             if (!$field->nullable) {
-                $template .= " NOT NULL";    
+                $template .= " NOT NULL";
             }
             
             if ($field->default !== null) {

@@ -42,7 +42,7 @@ class Router
             }
             catch (Throwable $e) {
                 if ($e instanceof ValidationException) {
-                    $_SESSION['errors'] = $e->getErrors();
+                    $_SESSION[$e->getSessionName()] = $e->getErrors();
                     return redirect($_SERVER['HTTP_REFERER']);
                 }
 

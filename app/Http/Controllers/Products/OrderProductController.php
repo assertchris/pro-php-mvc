@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Users;
+namespace App\Http\Controllers\Products;
 
 use Framework\Routing\Router;
 
-class RegisterUserController
+class OrderProductController
 {
     protected Router $router;
 
@@ -17,15 +17,9 @@ class RegisterUserController
     {
         secure();
 
-        $data = validate($_POST, [
-            'name' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:10'],
-        ], 'register_errors');
-
         // use $data to create a database record...
 
-        $_SESSION['registered'] = true;
+        $_SESSION['ordered'] = true;
 
         return redirect($this->router->route('show-home-page'));
     }

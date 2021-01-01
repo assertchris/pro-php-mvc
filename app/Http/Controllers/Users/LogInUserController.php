@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use Framework\Routing\Router;
 
-class RegisterUserController
+class LogInUserController
 {
     protected Router $router;
 
@@ -18,14 +18,13 @@ class RegisterUserController
         secure();
 
         $data = validate($_POST, [
-            'name' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'min:10'],
-        ], 'register_errors');
+        ], 'login_errors');
 
-        // use $data to create a database record...
+        // use $data to find a user...
 
-        $_SESSION['registered'] = true;
+        $_SESSION['logged_in'] = true;
 
         return redirect($this->router->route('show-home-page'));
     }
