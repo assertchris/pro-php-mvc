@@ -83,3 +83,16 @@ if (!function_exists('dd')) {
         die;
     }
 }
+
+if (!function_exists('basePath')) {
+    function basePath(string $newBasePath = null): ?string
+    {
+        static $basePath;
+
+        if (!is_null($newBasePath)) {
+            $basePath = $newBasePath;
+        }
+
+        return $basePath;
+    }
+}

@@ -22,12 +22,19 @@ abstract class QueryBuilder
      */
     public function all(): array
     {
+        if (!isset($this->type)) {
+            $this->select();
+        }
+
         $statement = $this->prepare();
         $statement->execute($this->getWhereValues());
 
         return $statement->fetchAll(Pdo::FETCH_ASSOC);
     }
 
+    /**
+     * Get the values for the where clause placeholders
+     */
     protected function getWhereValues(): array
     {
         $values = [];
@@ -58,6 +65,16 @@ abstract class QueryBuilder
 
         if ($this->type === 'insert') {
             $query = $this->compileInsert($query);
+        }
+
+        if ($this->type === 'update') {
+            $query = $this->compileUpdate($query);
+            $query = $this->compileWheres($query);
+        }
+
+        if ($this->type === 'delete') {
+            $query = $this->compileDelete($query);
+            $query = $this->compileWheres($query);
         }
 
         if (empty($query)) {
@@ -95,6 +112,9 @@ abstract class QueryBuilder
         return $query;
     }
 
+    /**
+     * Add where clauses to the query
+     */
     protected function compileWheres(string $query): string
     {
         if (count($this->wheres) === 0) {
@@ -130,10 +150,43 @@ abstract class QueryBuilder
     }
 
     /**
+     * Add update clause to the query
+     */
+    protected function compileUpdate(string $query): string
+    {
+        $joinedColumns = '';
+
+        foreach ($this->columns as $i => $column) {
+            if ($i > 0) {
+                $joinedColumns .= ', ';
+            }
+
+            $joinedColumns = " {$column} = :{$column}";
+        }
+
+        $query .= " UPDATE {$this->table} SET {$joinedColumns}";
+
+        return $query;
+    }
+
+    /**
+     * Add delete clause to the query
+     */
+    protected function compileDelete(string $query): string
+    {
+        $query .= " DELETE FROM {$this->table}";
+        return $query;
+    }
+
+    /**
      * Fetch the first row matching the current query
      */
     public function first(): array
     {
+        if (!isset($this->type)) {
+            $this->select();
+        }
+
         $statement = $this->take(1)->prepare();
         $statement->execute($this->getWhereValues());
 
@@ -198,6 +251,9 @@ abstract class QueryBuilder
         return $statement->execute($values);
     }
 
+    /**
+     * Store where clause data for later queries
+     */
     public function where(string $column, mixed $comparator, mixed $value = null): static
     {
         if (is_null($value) && !is_null($comparator)) {
@@ -207,5 +263,40 @@ abstract class QueryBuilder
         }
 
         return $this;
+    }
+
+    /**
+     * Insert a row of data into the table specified in the query
+     * and return the number of affected rows
+     */
+    public function update(array $columns, array $values): int
+    {
+        $this->type = 'update';
+        $this->columns = $columns;
+        $this->values = $values;
+
+        $statement = $this->prepare();
+
+        return $statement->execute($this->getWhereValues() + $values);
+    }
+
+    /**
+     * Get the ID of the last row that was inserted
+     */
+    public function getLastInsertId(): string
+    {
+        return $this->connection->pdo()->lastInsertId();
+    }
+
+    /**
+     * Delete a row from the database
+     */
+    public function delete(): int
+    {
+        $this->type = 'delete';
+
+        $statement = $this->prepare();
+
+        return $statement->execute($this->getWhereValues());
     }
 }

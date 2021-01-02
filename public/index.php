@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+basePath(__DIR__ . '/../');
+
 session_start();
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
