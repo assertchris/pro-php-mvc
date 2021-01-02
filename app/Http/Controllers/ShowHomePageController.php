@@ -46,26 +46,6 @@ class ShowHomePageController
             'route' => $this->router->route('view-product', ['product' => $product['id']]),
         ]), $products);
 
-        $user = new User();
-        $user->name = 'Chris';
-        $user->email = 'cgpitt@gmail.com';
-        $user->password = 'password';
-        $user->save();
-
-        $profile = new Profile();
-        $profile->user_id = $user->id;
-        $profile->save();
-
-        $order1 = new Order();
-        $order1->user_id = $user->id;
-        $order1->save();
-
-        $order2 = new Order();
-        $order2->user_id = $user->id;
-        $order2->save();
-
-        dd($user->profile, $profile->user, $user->orders);
-
         return view('home', [
             'number' => 42,
             'products' => $productsWithRoutes,
