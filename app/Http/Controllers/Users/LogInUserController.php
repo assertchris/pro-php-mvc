@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Models\User;
 use Framework\Routing\Router;
 
 class LogInUserController
@@ -22,9 +23,14 @@ class LogInUserController
             'password' => ['required', 'min:10'],
         ], 'login_errors');
 
-        // use $data to find a user...
+        $user = User::where('email', $data['email'])->first();
 
-        $_SESSION['logged_in'] = true;
+        if (!$user || !password_verify($data['password'], $user->password)) {
+            $_SESSION['logged_in'] = false;
+        } else {
+            $_SESSION['logged_in'] = true;
+            $_SESSION['user_id'] = $user->id;
+        }
 
         return redirect($this->router->route('show-home-page'));
     }

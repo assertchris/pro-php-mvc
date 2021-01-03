@@ -193,4 +193,9 @@ abstract class Model
 
         return new Relationship($query, 'first');
     }
+
+    public static function find(int $id): static
+    {
+        return static::where('id', $id)->first();
+    }
 }

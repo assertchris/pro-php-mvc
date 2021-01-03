@@ -18,7 +18,7 @@ class MinRule implements Rule
 
         $length = (int) $params[0];
 
-        strlen($data[$field]) >= $length;
+        return strlen($data[$field]) >= $length;
     }
 
     public function getMessage(array $data, string $field, array $params)

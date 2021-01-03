@@ -4,6 +4,7 @@ use App\Http\Controllers\ShowHomePageController;
 use App\Http\Controllers\Products\OrderProductController;
 use App\Http\Controllers\Products\ShowProductController;
 use App\Http\Controllers\Users\LogInUserController;
+use App\Http\Controllers\Users\LogOutUserController;
 use App\Http\Controllers\Users\RegisterUserController;
 use App\Http\Controllers\Users\ShowRegisterFormController;
 use Framework\Routing\Router;
@@ -42,4 +43,9 @@ return function(Router $router) {
         'POST', '/log-in',
         [new LogInUserController($router), 'handle'],
     )->name('log-in-user');
+
+    $router->add(
+        'GET', '/log-out',
+        [new LogOutUserController($router), 'handle'],
+    )->name('log-out-user');
 };

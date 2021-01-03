@@ -9,12 +9,12 @@
     ">
         <div class="container mx-auto px-8 py-8 md:py-16">
             <h2 class="text-3xl font-bold">
-                {{ $product['name'] }}
+                {{ $product->name }}
             </h2>
             <p class="text-xl my-4">
-                {!! $product['description'] !!}
+                {!! $product->description !!}
             </p>
-            <a href="{{ $product['route'] }}" class="bg-indigo-500 rounded-lg p-2 text-white">
+            <a href="{{ $product->route }}" class="bg-indigo-500 rounded-lg p-2 text-white">
                 Order
             </a>
         </div>

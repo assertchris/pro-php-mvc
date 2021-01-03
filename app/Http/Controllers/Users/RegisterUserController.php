@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Models\User;
 use Framework\Routing\Router;
 
 class RegisterUserController
@@ -23,7 +24,11 @@ class RegisterUserController
             'password' => ['required', 'min:10'],
         ], 'register_errors');
 
-        // use $data to create a database record...
+        $user = new User();
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
+        $user->save();
 
         $_SESSION['registered'] = true;
 

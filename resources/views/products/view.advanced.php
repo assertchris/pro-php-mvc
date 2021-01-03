@@ -2,10 +2,10 @@
 @includes('includes/large-feature')
 <div class="container mx-auto px-8 py-8 md:py-16">
     <h1 class="text-3xl font-bold">
-        {{ $product['name'] }}
+        {{ $product->name }}
     </h1>
     <p class="text-xl my-4">
-        {!! $product['description'] !!}
+        {!! $product->description !!}
     </p>
     <h2 class="text-2xl font-bold">
         Order
