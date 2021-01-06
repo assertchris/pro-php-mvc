@@ -2,16 +2,20 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-basePath(__DIR__ . '/../');
+// basePath(__DIR__ . '/../');
 
-session_start();
+// session_start();
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+// $dotenv->load();
 
-$router = new Framework\Routing\Router();
+// $router = new Framework\Routing\Router();
 
-$routes = require_once __DIR__ . '/../app/routes.php';
-$routes($router);
+// $routes = require_once __DIR__ . '/../app/routes.php';
+// $routes($router);
 
-print $router->dispatch();
+// print $router->dispatch();
+
+$app = \Framework\App::getInstance();
+$app->bind('paths.base', fn() => __DIR__ . '/../');
+$app->run();

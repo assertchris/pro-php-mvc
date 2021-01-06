@@ -1,35 +1,58 @@
 <?php
 
+use Framework\App;
 use Framework\Validation;
 use Framework\View;
 
-if (!function_exists('view')) {
-    function view(string $template, array $data = []): View\View
+if (!function_exists('app')) {
+    function app(string $alias = null): mixed
     {
-        static $manager;
-
-        if (!$manager) {
-            $manager = new View\Manager();
-
-            // let's add a path for our views folder
-            // so the manager knows where to look for views
-            $manager->addPath(__DIR__ . '/../resources/views');
-            $manager->addPath(__DIR__ . '/../resources/images');
-
-            // we'll also start adding new engine classes
-            // with their expected extensions to be able to pick
-            // the appropriate engine for the template
-            $manager->addEngine('basic.php', new View\Engine\BasicEngine());
-            $manager->addEngine('advanced.php', new View\Engine\AdvancedEngine());
-            $manager->addEngine('php', new View\Engine\PhpEngine());
-            $manager->addEngine('svg', new View\Engine\LiteralEngine());
-
-            // how about macros? let's add them here for now
-            $manager->addMacro('escape', fn($value) => htmlspecialchars($value, ENT_QUOTES));
-            $manager->addMacro('includes', fn(...$params) => print view(...$params));
+        if (is_null($alias)) {
+            return App::getInstance();
         }
 
-        return $manager->resolve($template, $data);
+        return App::getInstance()->resolve($alias);
+    }
+}
+
+if (!function_exists('view')) {
+    // app()->bind('view', function($app) {
+    //     $manager = new View\Manager();
+
+    //     $manager->addPath(__DIR__ . '/../resources/views');
+    //     $manager->addPath(__DIR__ . '/../resources/images');
+
+    //     $manager->addEngine('basic.php', new View\Engine\BasicEngine());
+    //     $manager->addEngine('advanced.php', new View\Engine\AdvancedEngine());
+    //     $manager->addEngine('php', new View\Engine\PhpEngine());
+    //     $manager->addEngine('svg', new View\Engine\LiteralEngine());
+
+    //     $manager->addMacro('escape', fn($value) => htmlspecialchars($value, ENT_QUOTES));
+    //     $manager->addMacro('includes', fn(...$params) => print view(...$params));
+
+    //     return $manager;
+    // });
+
+    function view(string $template, array $data = []): View\View
+    {
+        return app()->resolve('view')->resolve($template, $data);
+    }
+}
+
+if (!function_exists('validate')) {
+    app()->bind('validator', function($app) {
+        $manager = new Validation\Manager();
+
+        $manager->addRule('required', new Validation\Rule\RequiredRule());
+        $manager->addRule('email', new Validation\Rule\EmailRule());
+        $manager->addRule('min', new Validation\Rule\MinRule());
+
+        return $manager;
+    });
+
+    function validate(array $data, array $rules, string $sessionName = 'errors')
+    {
+        return app('validator')->validate($data, $rules, $sessionName);
     }
 }
 
@@ -38,24 +61,6 @@ if (!function_exists('redirect')) {
     {
         header("Location: {$url}");
         exit;
-    }
-}
-
-if (!function_exists('validate')) {
-    function validate(array $data, array $rules, string $sessionName = 'errors')
-    {
-        static $manager;
-
-        if (!$manager) {
-            $manager = new Validation\Manager();
-
-            // let's add the rules that come with the framework
-            $manager->addRule('required', new Validation\Rule\RequiredRule());
-            $manager->addRule('email', new Validation\Rule\EmailRule());
-            $manager->addRule('min', new Validation\Rule\MinRule());
-        }
-
-        return $manager->validate($data, $rules, $sessionName);
     }
 }
 
@@ -87,12 +92,6 @@ if (!function_exists('dd')) {
 if (!function_exists('basePath')) {
     function basePath(string $newBasePath = null): ?string
     {
-        static $basePath;
-
-        if (!is_null($newBasePath)) {
-            $basePath = $newBasePath;
-        }
-
-        return $basePath;
+        return app('paths.base');
     }
 }
