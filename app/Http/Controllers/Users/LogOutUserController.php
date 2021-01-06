@@ -16,7 +16,6 @@ class LogOutUserController
     public function handle()
     {
         unset($_SESSION['user_id']);
-        $_SESSION['logged_out'] = true;
 
         return redirect($this->router->route('show-home-page'));
     }
