@@ -7,14 +7,7 @@ use Framework\Routing\Router;
 
 class RegisterUserController
 {
-    protected Router $router;
-
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
-
-    public function handle()
+    public function handle(Router $router)
     {
         secure();
 
@@ -32,6 +25,6 @@ class RegisterUserController
 
         $_SESSION['registered'] = true;
 
-        return redirect($this->router->route('show-home-page'));
+        return redirect($router->route('show-home-page'));
     }
 }

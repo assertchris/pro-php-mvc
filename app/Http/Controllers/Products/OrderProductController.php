@@ -6,14 +6,7 @@ use Framework\Routing\Router;
 
 class OrderProductController
 {
-    protected Router $router;
-
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
-
-    public function handle()
+    public function handle(Router $router)
     {
         secure();
 
@@ -21,6 +14,6 @@ class OrderProductController
 
         $_SESSION['ordered'] = true;
 
-        return redirect($this->router->route('show-home-page'));
+        return redirect($router->route('show-home-page'));
     }
 }

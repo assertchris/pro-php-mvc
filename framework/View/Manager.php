@@ -26,7 +26,7 @@ class Manager
         return $this;
     }
 
-    public function resolve(string $template, array $data = []): View
+    public function render(string $template, array $data = []): View
     {
         foreach ($this->engines as $extension => $engine) {
             foreach ($this->paths as $path) {

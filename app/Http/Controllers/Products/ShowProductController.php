@@ -7,22 +7,15 @@ use Framework\Routing\Router;
 
 class ShowProductController
 {
-    protected Router $router;
-
-    public function __construct(Router $router)
+    public function handle(Router $router)
     {
-        $this->router = $router;
-    }
-
-    public function handle()
-    {
-        $parameters = $this->router->current()->parameters();
+        $parameters = $router->current()->parameters();
 
         $product = Product::find((int) $parameters['product']);
 
         return view('products/view', [
             'product' => $product,
-            'orderAction' => $this->router->route('order-product', ['product' => $product->id]),
+            'orderAction' => $router->route('order-product', ['product' => $product->id]),
             'csrf' => csrf(),
         ]);
     }

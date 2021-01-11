@@ -7,13 +7,6 @@ use Framework\Routing\Router;
 
 class ShowHomePageController
 {
-    // protected Router $router;
-
-    // public function __construct(Router $router)
-    // {
-    //     $this->router = $router;
-    // }
-
     public function handle(Router $router)
     {
         $products = Product::all();

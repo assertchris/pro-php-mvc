@@ -16,36 +16,36 @@ return function(Router $router) {
 
     $router->add(
         'GET', '/',
-        [new ShowHomePageController($router), 'handle'],
+        [ShowHomePageController::class, 'handle'],
     )->name('show-home-page');
 
     $router->add(
         'GET', '/products/view/{product}',
-        [new ShowProductController($router), 'handle'],
+        [ShowProductController::class, 'handle'],
     )->name('view-product');
 
     $router->add(
         'POST', '/products/order/{product}',
-        [new OrderProductController($router), 'handle'],
+        [OrderProductController::class, 'handle'],
     )->name('order-product');
 
     $router->add(
         'GET', '/register',
-        [new ShowRegisterFormController($router), 'handle'],
+        [ShowRegisterFormController::class, 'handle'],
     )->name('show-register-form');
 
     $router->add(
         'POST', '/register',
-        [new RegisterUserController($router), 'handle'],
+        [RegisterUserController::class, 'handle'],
     )->name('register-user');
 
     $router->add(
         'POST', '/log-in',
-        [new LogInUserController($router), 'handle'],
+        [LogInUserController::class, 'handle'],
     )->name('log-in-user');
 
     $router->add(
         'GET', '/log-out',
-        [new LogOutUserController($router), 'handle'],
+        [LogOutUserController::class, 'handle'],
     )->name('log-out-user');
 };
