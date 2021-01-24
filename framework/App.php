@@ -4,6 +4,7 @@ namespace Framework;
 
 use Dotenv\Dotenv;
 use Framework\Routing\Router;
+use Framework\Http\Response;
 
 class App extends Container
 {
@@ -23,13 +24,16 @@ class App extends Container
 
     public function run()
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
         $basePath = $this->resolve('paths.base');
 
         $this->configure($basePath);
         $this->bindProviders($basePath);
-        $this->dispatch($basePath);
+
+        return $this->dispatch($basePath);
     }
 
     private function configure(string $basePath)
@@ -51,7 +55,7 @@ class App extends Container
         }
     }
 
-    private function dispatch(string $basePath)
+    private function dispatch(string $basePath): Response
     {
         $router = new Router();
 
@@ -60,6 +64,12 @@ class App extends Container
         $routes = require "{$basePath}/app/routes.php";
         $routes($router);
 
-        print $router->dispatch();
+        $response = $router->dispatch();
+
+        if (!$response instanceof Response) {
+            $response = $this->resolve('response')->content($response);
+        }
+
+        return $response;
     }
 }

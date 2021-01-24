@@ -29,11 +29,17 @@ if (!function_exists('validate')) {
     }
 }
 
+if (!function_exists('response')) {
+    function response()
+    {
+        return app('response');
+    }
+}
+
 if (!function_exists('redirect')) {
     function redirect(string $url)
     {
-        header("Location: {$url}");
-        exit;
+        return response()->redirect($url);
     }
 }
 

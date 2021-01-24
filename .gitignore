@@ -1,3 +1,4 @@
 .env
 database/*.sqlite
 vendor
+*.cache
