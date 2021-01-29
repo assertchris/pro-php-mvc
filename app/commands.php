@@ -1,9 +1,9 @@
 <?php
 
-use App\Console\Commands\NameCommand;
 use Framework\Database\Command\MigrateCommand;
+use Framework\Support\Command\ServeCommand;
 
 return [
     MigrateCommand::class,
-    NameCommand::class,
+    ServeCommand::class,
 ];

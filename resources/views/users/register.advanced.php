@@ -8,10 +8,10 @@
         <form
             method="post"
             action="{{ $registerAction }}"
-            class="flex flex-col w-full space-y-4 max-w-xl"
+            class="flex flex-col w-full space-y-4 max-w-xl register-form"
         >
             @if(isset($_SESSION['register_errors']))
-                <ol class="list-disc text-red-500">
+                <ol class="list-disc text-red-500 register-errors">
                     @foreach($_SESSION['register_errors'] as $field => $errors)
                         @foreach($errors as $error)
                             <li>{{ $error }}</li>
@@ -51,7 +51,7 @@
             </label>
             <button
                 type="submit"
-                class="bg-indigo-500 rounded-lg p-2 text-white"
+                class="bg-indigo-500 rounded-lg p-2 text-white register-button"
             >
                 Register
             </button>

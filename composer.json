@@ -2,7 +2,7 @@
     "name": "whoosh/website",
     "description": "A website that sells Whoosh rockets",
     "scripts": {
-        "serve": "php -S 127.0.0.1:8000 -t public",
+        "serve": "php command.php serve",
         "test": "vendor/bin/phpunit"
     },
     "autoload": {
@@ -25,6 +25,7 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "symfony/panther": "^0.9.0",
-        "dbrekelmans/bdi": "^0.3.0"
+        "dbrekelmans/bdi": "^0.3.0",
+        "symfony/process": "^5.2"
     }
 }

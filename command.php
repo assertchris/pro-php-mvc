@@ -2,18 +2,15 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Dotenv\Dotenv;
-use Symfony\Component\Console\Application;
+$app = \Framework\App::getInstance();
+$app->bind('paths.base', fn() => __DIR__);
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-$application = new Application();
+$console = new \Symfony\Component\Console\Application();
 
 $commands = require __DIR__ . '/app/commands.php';
 
 foreach ($commands as $command) {
-    $application->add(new $command);
+    $console->add(new $command);
 }
 
-$application->run();
+$console->run();

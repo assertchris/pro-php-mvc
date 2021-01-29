@@ -1,4 +1,5 @@
 .env
 database/*.sqlite
+drivers/*
 vendor
 *.cache

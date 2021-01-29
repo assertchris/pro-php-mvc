@@ -10,7 +10,7 @@ use Framework\Validation\Rule\MinRule;
 
 class ValidationProvider
 {
-    public function bind(App $app)
+    public function bind(App $app): void
     {
         $app->bind('validator', function($app) {
             $manager = new Manager();
@@ -21,7 +21,7 @@ class ValidationProvider
         });
     }
 
-    private function bindRules(App $app, Manager $manager)
+    private function bindRules(App $app, Manager $manager): void
     {
         $app->bind('validation.rule.required', fn() => new RequiredRule());
         $app->bind('validation.rule.email', fn() => new EmailRule());

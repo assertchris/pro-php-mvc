@@ -1,6 +1,6 @@
 <phpunit
     backupGlobals="true"
-    bootstrap="vendor/autoload.php"
+    bootstrap="tests/bootstrap.php"
     colors="true"
 >
     <testsuites>
@@ -8,4 +8,7 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <extensions>
+        <extension class="Framework\Testing\ServerExtension" />
+    </extensions>
 </phpunit>

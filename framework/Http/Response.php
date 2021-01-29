@@ -27,13 +27,13 @@ class Response
         return $this;
     }
 
-    public function status(int $code = null): int|static
+    public function status(int $status = null): int|static
     {
-        if (is_null($code)) {
-            return $this->code;
+        if (is_null($status)) {
+            return $this->status;
         }
 
-        $this->code = $code;
+        $this->status = $status;
 
         return $this;
     }
@@ -96,7 +96,6 @@ class Response
 
         if ($this->type === static::REDIRECT) {
             header("Location: {$this->redirect}");
-            http_response_code($this->code);
             return;
         }
 

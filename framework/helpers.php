@@ -74,3 +74,14 @@ if (!function_exists('basePath')) {
         return app('paths.base');
     }
 }
+
+if (!function_exists('env')) {
+    function env(string $key, mixed $default = null): mixed
+    {
+        if (isset($_SERVER[$key])) {
+            return $_SERVER[$key];
+        }
+
+        return $default;
+    }
+}

@@ -3,14 +3,12 @@
 namespace Framework\Testing;
 
 use Closure;
-use Exception;
-use Framework\App;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Throwable;
 
 class TestCase extends BaseTestCase
 {
-    protected function assertExceptionThrown(Closure $risky, string $exceptionType)
+    protected function assertExceptionThrown(Closure $risky, string $exceptionType): array
     {
         $result = null;
         $exception = null;

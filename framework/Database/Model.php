@@ -26,19 +26,7 @@ abstract class Model
     public function getConnection(): Connection
     {
         if (!isset($this->connection)) {
-            $factory = new Factory();
-
-            $factory->addConnector('mysql', function($config) {
-                return new MysqlConnection($config);
-            });
-
-            $factory->addConnector('sqlite', function($config) {
-                return new SqliteConnection($config);
-            });
-
-            $config = require basePath() . 'config/database.php';
-
-            $this->connection = $factory->connect($config[$config['default']]);
+            $this->connection = app('database');
         }
 
         return $this->connection;
