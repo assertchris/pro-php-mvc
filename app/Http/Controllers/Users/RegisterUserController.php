@@ -23,7 +23,7 @@ class RegisterUserController
         $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
         $user->save();
 
-        $_SESSION['registered'] = true;
+        session()->put('registered', true);
 
         return redirect($router->route('show-home-page'));
     }

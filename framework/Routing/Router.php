@@ -2,11 +2,8 @@
 
 namespace Framework\Routing;
 
-use Exception;
-use Framework\Validation\ValidationException;
+use Framework\Routing\Exception;
 use Throwable;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Run;
 
 class Router
 {
@@ -41,16 +38,14 @@ class Router
                 return $matching->dispatch();
             }
             catch (Throwable $e) {
-                if ($e instanceof ValidationException) {
-                    $_SESSION[$e->getSessionName()] = $e->getErrors();
-                    return redirect($_SERVER['HTTP_REFERER']);
-                }
+                $result = null;
 
-                if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
-                    $whoops = new Run();
-                    $whoops->pushHandler(new PrettyPageHandler);
-                    $whoops->register();
-                    throw $e;
+                if ($handler = config('handlers.exceptions')) {
+                    $instance = new $handler();
+
+                    if ($result = $instance->showThrowable($e)) {
+                        return $result;
+                    }
                 }
 
                 return $this->dispatchError();
@@ -109,12 +104,6 @@ class Router
         return $this->errorHandlers[500]();
     }
 
-    public function redirect($path)
-    {
-        header("Location: {$path}", $replace = true, $code = 301);
-        exit;
-    }
-
     public function route(string $name, array $parameters = []): string
     {
         foreach ($this->routes as $route) {
@@ -137,6 +126,6 @@ class Router
             }
         }
 
-        throw new Exception('no route with that name');
+        throw new Exception('No route with that name');
     }
 }

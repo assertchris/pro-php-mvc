@@ -19,7 +19,7 @@ class LogInUserController
         $user = User::where('email', $data['email'])->first();
 
         if ($user && password_verify($data['password'], $user->password)) {
-            $_SESSION['user_id'] = $user->id;
+            session()->put('user_id', $user->id);
         }
 
         return redirect($router->route('show-home-page'));

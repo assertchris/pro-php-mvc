@@ -5,14 +5,15 @@ namespace Framework\Database;
 use Closure;
 use Framework\Database\Connection\Connection;
 use Framework\Database\Exception\ConnectionException;
+use Framework\Support\DriverFactory;
 
-class Factory
+class Factory implements DriverFactory
 {
-    protected array $connectors;
+    protected array $drivers;
 
-    public function addConnector(string $alias, Closure $connector): static
+    public function addDriver(string $alias, Closure $driver): static
     {
-        $this->connectors[$alias] = $connector;
+        $this->drivers[$alias] = $driver;
         return $this;
     }
 
@@ -24,8 +25,8 @@ class Factory
 
         $type = $config['type'];
 
-        if (isset($this->connectors[$type])) {
-            return $this->connectors[$type]($config);
+        if (isset($this->drivers[$type])) {
+            return $this->drivers[$type]($config);
         }
 
         throw new ConnectionException('unrecognised type');

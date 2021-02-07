@@ -5,8 +5,9 @@ namespace Framework\Session;
 use Closure;
 use Framework\Session\Driver\Driver;
 use Framework\Session\Exception\DriverException;
+use Framework\Support\DriverFactory;
 
-class Factory
+class Factory implements DriverFactory
 {
     protected array $drivers;
 

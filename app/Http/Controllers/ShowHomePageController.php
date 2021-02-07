@@ -24,19 +24,6 @@ class ShowHomePageController
             return $product;
         }, $products);
 
-        // app('session')->put(
-        //     'hits', app('session')->get('hits', 0) + 1
-        // );
-
-        if (!app('filesystem')->exists('hits.txt')) {
-            app('filesystem')->put('hits.txt', '');
-        }
-
-        app('filesystem')->put(
-            'hits.txt',
-            (int) app('filesystem')->get('hits.txt', 0) + 1,
-        );
-
         return view('home', [
             'products' => $productsWithRoutes,
         ]);

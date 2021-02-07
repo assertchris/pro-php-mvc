@@ -46,15 +46,28 @@ if (!function_exists('redirect')) {
 if (!function_exists('csrf')) {
     function csrf()
     {
-        $_SESSION['token'] = bin2hex(random_bytes(32));
-        return $_SESSION['token'];
+        $session = session();
+
+        if (!$session) {
+            throw new Exception('Session is not enabled');
+        }
+
+        $session->put('token', $token = bin2hex(random_bytes(32)));
+
+        return $token;
     }
 }
 
 if (!function_exists('secure')) {
     function secure()
     {
-        if (!isset($_POST['csrf']) || !isset($_SESSION['token']) ||  !hash_equals($_SESSION['token'], $_POST['csrf'])) {
+        $session = session();
+
+        if (!$session) {
+            throw new Exception('Session is not enabled');
+        }
+
+        if (!isset($_POST['csrf']) || !$session->has('token') ||  !hash_equals($session->get('token'), $_POST['csrf'])) {
             throw new Exception('CSRF token mismatch');
         }
     }
@@ -87,8 +100,23 @@ if (!function_exists('env')) {
 }
 
 if (!function_exists('config')) {
-    function config(string $key, mixed $default = null): mixed
+    function config(string $key = null, mixed $default = null): mixed
     {
+        if (is_null($key)) {
+            return app('config');
+        }
+
         return app('config')->get($key, $default);
+    }
+}
+
+if (!function_exists('session')) {
+    function session(string $key = null, mixed $default = null): mixed
+    {
+        if (is_null($key)) {
+            return app('session');
+        }
+
+        return app('session')->get($key, $default);
     }
 }
