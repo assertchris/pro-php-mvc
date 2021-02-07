@@ -2,28 +2,29 @@
 
 namespace Framework\Provider;
 
-use Framework\App;
 use Framework\Filesystem\Factory;
 use Framework\Filesystem\Driver\LocalDriver;
+use Framework\Support\DriverProvider;
+use Framework\Support\DriverFactory;
 
-class FilesystemProvider
+class FilesystemProvider extends DriverProvider
 {
-    public function bind(App $app): void
+    protected function name(): string
     {
-        $app->bind('filesystem', function($app) {
-            $factory = new Factory();
-            $this->addLocalDriver($factory);
-
-            $config = config('filesystem');
-
-            return $factory->connect($config[$config['default']]);
-        });
+        return 'filesystem';
     }
 
-    private function addLocalDriver($factory): void
+    protected function factory(): DriverFactory
     {
-        $factory->addDriver('local', function($config) {
-            return new LocalDriver($config);
-        });
+        return new Factory();
+    }
+
+    protected function drivers(): array
+    {
+        return [
+            'local' => function($config) {
+                return new LocalDriver($config);
+            },
+        ];
     }
 }

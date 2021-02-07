@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Validation;
+namespace Framework\Validation\Exception;
 
 use InvalidArgumentException;
 

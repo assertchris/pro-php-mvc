@@ -5,8 +5,9 @@ namespace Framework\Filesystem;
 use Closure;
 use Framework\Filesystem\Driver\Driver;
 use Framework\Filesystem\Exception\DriverException;
+use Framework\Support\DriverFactory;
 
-class Factory
+class Factory implements DriverFactory
 {
     protected array $drivers;
 

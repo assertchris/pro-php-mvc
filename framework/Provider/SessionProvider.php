@@ -2,28 +2,29 @@
 
 namespace Framework\Provider;
 
-use Framework\App;
 use Framework\Session\Factory;
 use Framework\Session\Driver\NativeDriver;
+use Framework\Support\DriverProvider;
+use Framework\Support\DriverFactory;
 
-class SessionProvider
+class SessionProvider extends DriverProvider
 {
-    public function bind(App $app): void
+    protected function name(): string
     {
-        $app->bind('session', function($app) {
-            $factory = new Factory();
-            $this->addNativeDriver($factory);
-
-            $config = config('session');
-
-            return $factory->connect($config[$config['default']]);
-        });
+        return 'session';
     }
 
-    private function addNativeDriver($factory): void
+    protected function factory(): DriverFactory
     {
-        $factory->addDriver('native', function($config) {
-            return new NativeDriver($config);
-        });
+        return new Factory();
+    }
+
+    protected function drivers(): array
+    {
+        return [
+            'native' => function($config) {
+                return new NativeDriver($config);
+            },
+        ];
     }
 }

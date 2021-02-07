@@ -2,46 +2,37 @@
 
 namespace Framework\Provider;
 
-use Framework\App;
 use Framework\Cache\Factory;
 use Framework\Cache\Driver\FileDriver;
 use Framework\Cache\Driver\MemcacheDriver;
 use Framework\Cache\Driver\MemoryDriver;
+use Framework\Support\DriverProvider;
+use Framework\Support\DriverFactory;
 
-class CacheProvider
+class CacheProvider extends DriverProvider
 {
-    public function bind(App $app): void
+    protected function name(): string
     {
-        $app->bind('cache', function($app) {
-            $factory = new Factory();
-            $this->addFileDriver($factory);
-            $this->addMemcacheDriver($factory);
-            $this->addMemoryDriver($factory);
-
-            $config = config('cache');
-
-            return $factory->connect($config[$config['default']]);
-        });
+        return 'cache';
     }
 
-    private function addFileDriver($factory): void
+    protected function factory(): DriverFactory
     {
-        $factory->addDriver('file', function($config) {
-            return new FileDriver($config);
-        });
+        return new Factory();
     }
 
-    private function addMemcacheDriver($factory): void
+    protected function drivers(): array
     {
-        $factory->addDriver('memcache', function($config) {
-            return new MemcacheDriver($config);
-        });
-    }
-
-    private function addMemoryDriver($factory): void
-    {
-        $factory->addDriver('memory', function($config) {
-            return new MemoryDriver($config);
-        });
+        return [
+            'file' => function($config) {
+                return new FileDriver($config);
+            },
+            'memcache' => function($config) {
+                return new MemcacheDriver($config);
+            },
+            'memory' => function($config) {
+                return new MemoryDriver($config);
+            },
+        ];
     }
 }

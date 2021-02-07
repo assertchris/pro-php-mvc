@@ -2,8 +2,8 @@
 
 namespace Framework\Validation;
 
+use Framework\Validation\Exception\ValidationException;
 use Framework\Validation\Rule\Rule;
-use Framework\Validation\ValidationException;
 
 class Manager
 {
@@ -47,8 +47,9 @@ class Manager
             $exception->setSessionName($sessionName);
             throw $exception;
         } else {
-            // this is here until we have a better session system...
-            unset($_SESSION[$sessionName]);
+            if ($session = session()) {
+                $session->forget($sessionName);
+            }
         }
 
         return array_intersect_key($data, $rules);
