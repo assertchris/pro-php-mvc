@@ -16,19 +16,21 @@ class DatabaseProvider
             $this->addMysqlConnector($factory);
             $this->addSqliteConnector($factory);
 
-            $config = $this->config($app);
+            // $config = $this->config($app);
+            // $config = $app->resolve('config')->get('database');
+            $config = config('database');
 
             return $factory->connect($config[$config['default']]);
         });
     }
 
-    private function config(App $app): array
-    {
-        $base = $app->resolve('paths.base');
-        $separator = DIRECTORY_SEPARATOR;
+    // private function config(App $app): array
+    // {
+    //     $base = $app->resolve('paths.base');
+    //     $separator = DIRECTORY_SEPARATOR;
 
-        return require "{$base}{$separator}config/database.php";
-    }
+    //     return require "{$base}{$separator}config/database.php";
+    // }
 
     private function addMysqlConnector($factory): void
     {

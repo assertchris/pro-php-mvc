@@ -85,3 +85,10 @@ if (!function_exists('env')) {
         return $default;
     }
 }
+
+if (!function_exists('config')) {
+    function config(string $key, mixed $default = null): mixed
+    {
+        return app('config')->get($key, $default);
+    }
+}
