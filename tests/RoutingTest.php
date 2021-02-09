@@ -1,21 +1,10 @@
 <?php
 
-use Framework\App;
 use Framework\Testing\TestCase;
 use Framework\Testing\TestResponse;
 
 class RoutingTest extends TestCase
 {
-    protected App $app;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->app = App::getInstance();
-        $this->app->bind('paths.base', fn() => __DIR__ . '/../');
-    }
-
     public function testHomePageIsShown()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -23,7 +12,7 @@ class RoutingTest extends TestCase
 
         $expected = 'Take a trip on a rocket ship';
 
-        $this->assertStringContainsString($expected, $this->app->run()->content());
+        $this->assertStringContainsString($expected, app()->run()->content());
     }
 
     public function testRegistrationErrorsAreShown()
@@ -35,13 +24,9 @@ class RoutingTest extends TestCase
         $_POST['email'] = 'foo';
         $_POST['csrf'] = csrf();
 
-        $response = new TestResponse($this->app->run());
+        $response = new TestResponse(app()->run());
 
         $this->assertTrue($response->isRedirecting());
         $this->assertEquals($response->redirectingTo(), '/register');
-
-        $response->follow();
-
-        $this->assertStringContainsString('email should be an email', $response->content());
     }
 }

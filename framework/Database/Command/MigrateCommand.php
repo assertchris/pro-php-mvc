@@ -36,13 +36,16 @@ class MigrateCommand extends Command
             return Command::SUCCESS;
         }
 
-        $connection = $this->connection();
+        // $connection = $this->connection();
+        $connection = app('database');
 
         if ($input->getOption('fresh')) {
             $output->writeln('Dropping existing database tables');
 
             $connection->dropTables();
-            $connection = $this->connection();
+
+            // $connection = $this->connection();
+            $connection = app('database');
         }
 
         if (!$connection->hasTable('migrations')) {
@@ -70,22 +73,22 @@ class MigrateCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function connection(): Connection
-    {
-        $factory = new Factory();
+    // private function connection(): Connection
+    // {
+    //     $factory = new Factory();
 
-        $factory->addConnector('mysql', function($config) {
-            return new MysqlConnection($config);
-        });
+    //     $factory->addConnector('mysql', function($config) {
+    //         return new MysqlConnection($config);
+    //     });
 
-        $factory->addConnector('sqlite', function($config) {
-            return new SqliteConnection($config);
-        });
+    //     $factory->addConnector('sqlite', function($config) {
+    //         return new SqliteConnection($config);
+    //     });
 
-        $config = require getcwd() . '/config/database.php';
+    //     $config = require getcwd() . '/config/database.php';
 
-        return $factory->connect($config[$config['default']]);
-    }
+    //     return $factory->connect($config[$config['default']]);
+    // }
 
     private function createMigrationsTable(Connection $connection)
     {

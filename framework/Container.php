@@ -33,6 +33,11 @@ class Container
         return $this->resolved[$alias];
     }
 
+    public function has(string $alias): bool
+    {
+        return isset($this->bindings[$alias]);
+    }
+
     public function call(array|callable $callable, array $parameters = []): mixed
     {
         $reflector = $this->getReflector($callable);

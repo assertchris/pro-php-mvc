@@ -25,6 +25,10 @@ class RegisterUserController
 
         session()->put('registered', true);
 
+        app('queue')->push(function($user) {
+            // send a mail to the user...
+        }, $user);
+
         return redirect($router->route('show-home-page'));
     }
 }

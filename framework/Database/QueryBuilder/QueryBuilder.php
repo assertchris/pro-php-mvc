@@ -44,6 +44,11 @@ abstract class QueryBuilder
         }
 
         foreach ($this->wheres as $where) {
+            if (is_bool($where[2])) {
+                $values[$where[0]] = (int) $where[2];
+                continue;
+            }
+
             $values[$where[0]] = $where[2];
         }
 
@@ -125,7 +130,7 @@ abstract class QueryBuilder
 
         foreach ($this->wheres as $i => $where) {
             if ($i > 0) {
-                $query .= ', ';
+                $query .= ' AND ';
             }
 
             [$column, $comparator, $value] = $where;
@@ -181,7 +186,7 @@ abstract class QueryBuilder
     /**
      * Fetch the first row matching the current query
      */
-    public function first(): array
+    public function first(): ?array
     {
         if (!isset($this->type)) {
             $this->select();

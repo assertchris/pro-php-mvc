@@ -24,6 +24,21 @@ class ShowHomePageController
             return $product;
         }, $products);
 
+        // app('queue')->push(
+        //     fn($name) => app('logging')->info("Hello {$name}"),
+        //     'Chris',
+        // );
+
+        // app('logging')->info('Send a task into the background');
+
+        // app('queue')->push(
+        //     fn($name) => app('email')
+        //         ->to('cgpitt@gmail.com')
+        //         ->text("Hello {$name}")
+        //         ->send(),
+        //     'Chris',
+        // );
+
         return view('home', [
             'products' => $productsWithRoutes,
         ]);

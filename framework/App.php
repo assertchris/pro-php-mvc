@@ -22,14 +22,19 @@ class App extends Container
     private function __construct() {}
     private function __clone() {}
 
-    public function run()
+    public function prepare(): static
     {
         $basePath = $this->resolve('paths.base');
 
         $this->configure($basePath);
         $this->bindProviders($basePath);
 
-        return $this->dispatch($basePath);
+        return $this;
+    }
+
+    public function run(): Response
+    {
+        return $this->dispatch($this->resolve('paths.base'));
     }
 
     private function configure(string $basePath)
@@ -53,14 +58,16 @@ class App extends Container
 
     private function dispatch(string $basePath): Response
     {
-        $router = new Router();
+        if (!$this->has(Router::class)) {
+            $router = new Router();
 
-        $this->bind(Router::class, fn() => $router);
+            $routes = require "{$basePath}/app/routes.php";
+            $routes($router);
 
-        $routes = require "{$basePath}/app/routes.php";
-        $routes($router);
+            $this->bind(Router::class, fn() => $router);
+        }
 
-        $response = $router->dispatch();
+        $response = $this->resolve(Router::class)->dispatch();
 
         if (!$response instanceof Response) {
             $response = $this->resolve('response')->content($response);

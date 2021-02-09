@@ -8,7 +8,7 @@ use Framework\Validation\Manager;
 use Framework\Validation\Rule\EmailRule;
 use Framework\Validation\Rule\MinRule;
 use Framework\Validation\Rule\RequiredRule;
-use Framework\Validation\ValidationException;
+use Framework\Validation\Exception\ValidationException;
 
 class ValidationTest extends Framework\Testing\TestCase
 {
