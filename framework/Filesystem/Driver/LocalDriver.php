@@ -7,9 +7,10 @@ use League\Flysystem\Local\LocalFilesystemAdapter;
 
 class LocalDriver extends Driver
 {
-    protected function connect()
+    protected function connect(array $config): Filesystem
     {
-        $adapter = new LocalFilesystemAdapter($this->config['path']);
-        $this->filesystem = new Filesystem($adapter);
+        $adapter = new LocalFilesystemAdapter($config['path']);
+
+        return new Filesystem($adapter);
     }
 }

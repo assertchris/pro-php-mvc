@@ -7,16 +7,13 @@ use League\Flysystem\Filesystem;
 abstract class Driver
 {
     protected Filesystem $filesystem;
-    protected array $config = [];
 
     public function __construct(array $config)
     {
-        $this->config = $config;
-
-        $this->connect();
+        $this->filesystem = $this->connect($config);
     }
 
-    abstract protected function connect();
+    abstract protected function connect(array $config): Filesystem;
 
     public function list(string $path, bool $recursive = false): iterable
     {
