@@ -48,7 +48,14 @@ class NativeDriver implements Driver
 
     public function flush(): static
     {
-        session_reset();
+        $prefix = $this->config['prefix'];
+
+        foreach (array_keys($_SESSION) as $key) {
+            if (str_starts_with($key, $prefix)) {
+                unset($_SESSION[$key]);
+            }
+        }
+
         return $this;
     }
 }
